@@ -41,10 +41,14 @@ class GameViewController: UIViewController {
         if gameKitHelper._enableGameCenter {
             //MenuView.hidden = true;
             NSNotificationCenter.defaultCenter().addObserver(self, selector: NotificationConstants.pvpConnEstablishedSelector, name: NotificationConstants.pvpConnEstablishedString , object: nil)
-            setUpGameScene()
+            setUpGameScene(false)
             initiateMultiplayerGC()
             
         }
+    }
+    @IBAction func LocalPlayButton(sender: AnyObject) {
+        setUpGameScene(true)
+        MenuView.hidden = true
     }
     func hideMainView() {
         MenuView.hidden = true
@@ -66,12 +70,16 @@ class GameViewController: UIViewController {
 
     }
     
-    func setUpGameScene() {
+    func setUpGameScene(isLocalGame : Bool) {
         if let scene = GameScene.unarchiveFromFile("GameScene") as? GameScene {
             // Configure the view.
+            if isLocalGame {
+                scene.setCurrentPlayerIndex(0)
+            }
             let skView = self.view as! SKView
             skView.showsFPS = true
             skView.showsNodeCount = true
+            //skView.showsPhysics = true
             
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = true
@@ -90,7 +98,7 @@ class GameViewController: UIViewController {
     
         networkingEngine = MultiplayerNetworking(gameKitHelper: gameKitHelper)
         networkingEngine.delegate = scene
-        scene.networkingEngine = networkingEngine
+        scene.setNetworkingEngine(networkingEngine)
         
         gameKitHelper.findMatchWithMinPlayers(2, maxPlayers: 2, viewController: self, delegate: networkingEngine)
     }

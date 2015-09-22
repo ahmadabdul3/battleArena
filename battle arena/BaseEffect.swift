@@ -14,13 +14,13 @@ class BaseEffect {
     var movement = Movement()
     var damage = Damage(initPhys: 0, xtndPhys: 0, initSpec: 0, xtndSpec: 0)
     var image = SKSpriteNode()
-    var duration:CGFloat = 0
-    var frequency:CGFloat = 0
+    var duration:NSTimeInterval = 0
+    var frequency:NSTimeInterval = 0
     
     init() {
         
     }
-    init(movement: Movement, damage: Damage, duration: CGFloat, frequency: CGFloat) {
+    init(movement: Movement, damage: Damage, duration: NSTimeInterval, frequency: NSTimeInterval) {
         self.movement = movement
         self.damage = damage
         self.duration = duration
@@ -30,10 +30,13 @@ class BaseEffect {
     func getSpeed() -> CGFloat {
         return movement.getSpeed()
     }
-    func getDuration() -> CGFloat {
+    func getDuration() -> NSTimeInterval {
         return duration
     }
-    func getFrequency() -> CGFloat {
+    func getFrequency() -> NSTimeInterval {
         return frequency
+    }
+    func getCount() -> Int {
+        return Int(duration / frequency)
     }
 }

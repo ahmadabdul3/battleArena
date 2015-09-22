@@ -11,12 +11,13 @@ import SpriteKit
 
 class BaseCharacter : SKNode {
     
-    var healthLabel = ""
+    var healthLabel = SKLabelNode(text: "100/100")
     var damageLabel = ""
     var isMoving = false
     var baseMovementSpeed:CGFloat = 1
     var weapon = ""
-    var maxHp = ""
+    var maxHp = "100"
+    var hitPoints: CGFloat = 100
     var target = ""
     var isAbilitySelected = false
     var canMove = true
@@ -34,9 +35,17 @@ class BaseCharacter : SKNode {
         super.init()
         self.name = "mainChar"
         addChild(getCharacterBody())
+        setUpHpLabel()
         SpritePhysicsSetUpHelper().basicSetUpPhysics(self, pBody: SKPhysicsBody(rectangleOfSize: convertNodeToSprite(self.childNodeWithName("charBody")!).size), dynamic: true, categoryBitMask: PhysicsCategory.Character, contactTestBitMask: PhysicsCategory.All, collisionBitMask: PhysicsCategory.Barrier, preciseCollision: true)
     }
     
+    func setUpHpLabel() {
+        healthLabel.fontName = "Arial-BoldMT"
+        healthLabel.fontSize = 15
+        healthLabel.fontColor = UIColor.redColor()
+        healthLabel.position = CGPointMake(self.position.x, self.position.y + 55)
+        addChild(healthLabel)
+    }
     func getCharacterBody() -> SKSpriteNode {
         let texture = SKTexture(imageNamed: "batman-sprite.png")
         let body = SKSpriteNode(texture: texture, color: nil, size: CGSize(width: 80, height: 100))
@@ -57,19 +66,73 @@ class BaseCharacter : SKNode {
     func updatePosition(point: CGPoint) {
         position = point
     }
+    func slideToPosition(newPosition: CGPoint) {
+        var slideToNewPosition = SKAction.moveTo(newPosition, duration: 0.1)
+        self.runAction(slideToNewPosition)
+    }
     func convertNodeToSprite(node : SKNode) -> SKSpriteNode {
         return node as! SKSpriteNode
     }
     
     
+    func applyAbilityEffect(effect:BaseEffect) {
+        
+        negativeEffect = effect
+        applyInitialDamage()
+        applyExtendedDamage()
+        resetNegativeEffectWithDelay(negativeEffect.duration)
+    }
+    func applyInitialDamage() {
+        deductHp(negativeEffect.damage.getInitPhys() + negativeEffect.damage.getInitSpec())
+    }
+    func applyExtendedDamage() {
+        if negativeEffect.damage.getXtndSpec() > 0 || negativeEffect.damage.getXtndPhys() > 0 {
+            runAction(
+                SKAction.repeatAction (
+                SKAction.sequence([
+                    SKAction.waitForDuration(negativeEffect.frequency),
+                    SKAction.runBlock({
+                        self.deductHp(self.negativeEffect.damage.getXtndPhys() + self.negativeEffect.damage.getXtndSpec())
+                        return ()
+                    })
+                    
+                    ]),
+                    count : negativeEffect.getCount()
+                )
+            )
+        }
+    }
+    
+    
+    func deductHp(amount: CGFloat) {
+        hitPoints -= amount
+        updateHpLabel()
+    }
+    func resetNegativeEffectWithDelay(delay: NSTimeInterval) {
+        runAction(
+            SKAction.sequence([
+                SKAction.waitForDuration(delay),
+                SKAction.runBlock({
+                    self.updateNegEffect(BaseEffect())
+                    return ()
+                })
+            ])
+        )
+    }
     func update() {
         
     }
 
-    
+    func updateHpLabel() {
+        healthLabel.text = String(stringInterpolationSegment: hitPoints) + "/" + maxHp
+    }
     
     //getters/setters
     
+    func updateNegEffect(effect: BaseEffect) {
+        negativeEffect = effect
+        
+    }
     func hasAbilitySelected() -> Bool {
         return isAbilitySelected
     }

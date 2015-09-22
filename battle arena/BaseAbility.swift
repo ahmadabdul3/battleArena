@@ -10,8 +10,9 @@ import Foundation
 import SpriteKit
 
 class BaseAbility:SKNode {
-    
+    var casterName = ""
     var texture = SKNode()
+    var projectileHead = SKNode()
     var effect = BaseEffect()
     
     func performAction() {

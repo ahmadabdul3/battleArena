@@ -36,6 +36,13 @@
 		96B626D71B917DA400124126 /* MovementAnalog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B626D61B917DA400124126 /* MovementAnalog.swift */; };
 		96B626D91B92A91800124126 /* batman-sprite.png in Resources */ = {isa = PBXBuildFile; fileRef = 96B626D81B92A91800124126 /* batman-sprite.png */; };
 		96B626DB1B92ABF300124126 /* b1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 96B626DA1B92ABF300124126 /* b1.jpg */; };
+		96D8AD161BACE35700AAD6B1 /* FrostBolt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8AD151BACE35700AAD6B1 /* FrostBolt.swift */; };
+		96D8AD191BAE17B300AAD6B1 /* FrostBolt.sks in Resources */ = {isa = PBXBuildFile; fileRef = 96D8AD181BAE17B300AAD6B1 /* FrostBolt.sks */; };
+		96D8AD1B1BAE193900AAD6B1 /* FreezeEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8AD1A1BAE193900AAD6B1 /* FreezeEffect.swift */; };
+		96D8AD1E1BAE1AAE00AAD6B1 /* CollisionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8AD1D1BAE1AAE00AAD6B1 /* CollisionManager.swift */; };
+		96D8AD201BAE2D7800AAD6B1 /* ICollisionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8AD1F1BAE2D7800AAD6B1 /* ICollisionHandler.swift */; };
+		96D8AD221BAE2F1B00AAD6B1 /* CharacterAbilityCollision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8AD211BAE2F1B00AAD6B1 /* CharacterAbilityCollision.swift */; };
+		96D8AD251BAE2FE900AAD6B1 /* IHasEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96D8AD241BAE2FE900AAD6B1 /* IHasEffect.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +89,13 @@
 		96B626D61B917DA400124126 /* MovementAnalog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementAnalog.swift; sourceTree = "<group>"; };
 		96B626D81B92A91800124126 /* batman-sprite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "batman-sprite.png"; sourceTree = "<group>"; };
 		96B626DA1B92ABF300124126 /* b1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = b1.jpg; sourceTree = "<group>"; };
+		96D8AD151BACE35700AAD6B1 /* FrostBolt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FrostBolt.swift; sourceTree = "<group>"; };
+		96D8AD181BAE17B300AAD6B1 /* FrostBolt.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = FrostBolt.sks; sourceTree = "<group>"; };
+		96D8AD1A1BAE193900AAD6B1 /* FreezeEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FreezeEffect.swift; sourceTree = "<group>"; };
+		96D8AD1D1BAE1AAE00AAD6B1 /* CollisionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollisionManager.swift; sourceTree = "<group>"; };
+		96D8AD1F1BAE2D7800AAD6B1 /* ICollisionHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICollisionHandler.swift; sourceTree = "<group>"; };
+		96D8AD211BAE2F1B00AAD6B1 /* CharacterAbilityCollision.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterAbilityCollision.swift; sourceTree = "<group>"; };
+		96D8AD241BAE2FE900AAD6B1 /* IHasEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IHasEffect.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,6 +150,8 @@
 		96B6268C1B90063500124126 /* battle arena */ = {
 			isa = PBXGroup;
 			children = (
+				96D8AD231BAE2FC100AAD6B1 /* Protocols */,
+				96D8AD1C1BAE1A9800AAD6B1 /* Collision */,
 				969B84501B967BE900443E82 /* GameCenter */,
 				96B626CA1B91058000124126 /* Abilities */,
 				96B626C51B901DB500124126 /* Emitters */,
@@ -211,6 +227,7 @@
 		96B626BE1B90125E00124126 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				96D8AD171BAE178400AAD6B1 /* emitters */,
 				96B626DA1B92ABF300124126 /* b1.jpg */,
 				96B626D81B92A91800124126 /* batman-sprite.png */,
 				96B626BF1B9012C400124126 /* hero-sprite.png */,
@@ -233,6 +250,7 @@
 				96B626CF1B91085A00124126 /* Movement */,
 				96B626C31B90170B00124126 /* Damage.swift */,
 				96B626CD1B91071000124126 /* BaseEffect.swift */,
+				96D8AD1A1BAE193900AAD6B1 /* FreezeEffect.swift */,
 			);
 			name = Effects;
 			sourceTree = "<group>";
@@ -250,6 +268,7 @@
 			isa = PBXGroup;
 			children = (
 				96B626CB1B91059100124126 /* BaseAbility.swift */,
+				96D8AD151BACE35700AAD6B1 /* FrostBolt.swift */,
 			);
 			name = Abilities;
 			sourceTree = "<group>";
@@ -260,6 +279,32 @@
 				96B626D01B91086500124126 /* Movement.swift */,
 			);
 			name = Movement;
+			sourceTree = "<group>";
+		};
+		96D8AD171BAE178400AAD6B1 /* emitters */ = {
+			isa = PBXGroup;
+			children = (
+				96D8AD181BAE17B300AAD6B1 /* FrostBolt.sks */,
+			);
+			name = emitters;
+			sourceTree = "<group>";
+		};
+		96D8AD1C1BAE1A9800AAD6B1 /* Collision */ = {
+			isa = PBXGroup;
+			children = (
+				96D8AD1D1BAE1AAE00AAD6B1 /* CollisionManager.swift */,
+				96D8AD1F1BAE2D7800AAD6B1 /* ICollisionHandler.swift */,
+				96D8AD211BAE2F1B00AAD6B1 /* CharacterAbilityCollision.swift */,
+			);
+			name = Collision;
+			sourceTree = "<group>";
+		};
+		96D8AD231BAE2FC100AAD6B1 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				96D8AD241BAE2FE900AAD6B1 /* IHasEffect.swift */,
+			);
+			name = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -344,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				96B6269E1B90063500124126 /* LaunchScreen.xib in Resources */,
+				96D8AD191BAE17B300AAD6B1 /* FrostBolt.sks in Resources */,
 				96B626DB1B92ABF300124126 /* b1.jpg in Resources */,
 				96B6269B1B90063500124126 /* Images.xcassets in Resources */,
 				96B626921B90063500124126 /* GameScene.sks in Resources */,
@@ -370,17 +416,23 @@
 			buildActionMask = 2147483647;
 			files = (
 				96B626D11B91086500124126 /* Movement.swift in Sources */,
+				96D8AD1E1BAE1AAE00AAD6B1 /* CollisionManager.swift in Sources */,
 				96B626D71B917DA400124126 /* MovementAnalog.swift in Sources */,
 				96AE335F1B9DF9E50047774E /* GKHelperGetter.swift in Sources */,
 				96B626BA1B90089E00124126 /* SpritePhysicsSetUpHelper.swift in Sources */,
 				96B626B51B9006F400124126 /* GameWorld.swift in Sources */,
 				96AE335D1B9D19920047774E /* GlobalConstants.swift in Sources */,
+				96D8AD221BAE2F1B00AAD6B1 /* CharacterAbilityCollision.swift in Sources */,
 				96B626941B90063500124126 /* GameScene.swift in Sources */,
+				96D8AD201BAE2D7800AAD6B1 /* ICollisionHandler.swift in Sources */,
+				96D8AD1B1BAE193900AAD6B1 /* FreezeEffect.swift in Sources */,
+				96D8AD161BACE35700AAD6B1 /* FrostBolt.swift in Sources */,
 				96B626CE1B91071000124126 /* BaseEffect.swift in Sources */,
 				96B626961B90063500124126 /* GameViewController.swift in Sources */,
 				96AE335B1B9D0EC60047774E /* GameNavigationController.swift in Sources */,
 				96B626901B90063500124126 /* AppDelegate.swift in Sources */,
 				96AE33591B9B2A980047774E /* MultiplayerNetworking.swift in Sources */,
+				96D8AD251BAE2FE900AAD6B1 /* IHasEffect.swift in Sources */,
 				969B84521B967C0800443E82 /* GameKitHelper.swift in Sources */,
 				96B626CC1B91059100124126 /* BaseAbility.swift in Sources */,
 				96B626BD1B90118C00124126 /* BaseCharacter.swift in Sources */,

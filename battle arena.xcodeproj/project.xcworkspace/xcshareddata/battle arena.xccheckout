@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>544CF770-5907-4DA4-85F6-087754DA5460</string>
+	<key>IDESourceControlProjectName</key>
+	<string>battle arena</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>3DF2C9DF77EDF74FBB1378C5C728E181B4D9D1F1</key>
+		<string>https://bitbucket.org/ahmadabdul3/battle-arena.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>battle arena.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>3DF2C9DF77EDF74FBB1378C5C728E181B4D9D1F1</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://bitbucket.org/ahmadabdul3/battle-arena.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>3DF2C9DF77EDF74FBB1378C5C728E181B4D9D1F1</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>3DF2C9DF77EDF74FBB1378C5C728E181B4D9D1F1</string>
+			<key>IDESourceControlWCCName</key>
+			<string>battle%20arena</string>
+		</dict>
+	</array>
+</dict>
+</plist>

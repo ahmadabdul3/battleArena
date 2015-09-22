@@ -13,6 +13,7 @@ protocol MultiplayerNetworkingProtocol {
     func syncRemotePlayerPosition(posX:CGFloat, posY:CGFloat)
     func gameOver(player1Won: Bool)
     func setPlayerAliases(playerAliases:NSArray)
+    func shootProjectileInDirectionWithDuration(destX:CGFloat, destY:CGFloat, duration: CGFloat)
 }
 
 
@@ -36,7 +37,8 @@ enum MessageType: Int {
     kMessageTypeGameBegin,
     kMessageTypeMove,
     kMessageTypeGameOver,
-    KMessageTypeSyncRemotePlayerPosition
+    KMessageTypeSyncRemotePlayerPosition,
+    kMessageTypeAddAbility
 }
 
 struct Message {
@@ -66,6 +68,13 @@ struct MessageSyncRemotePlayerPosition {
     var message:Message
     var positionX:CGFloat
     var positionY:CGFloat
+}
+struct MessageAddAbility {
+    var message:Message
+    var name:String
+    var destinationX:CGFloat
+    var destinationY:CGFloat
+    var duration:CGFloat
 }
 
 class MultiplayerNetworking : GameKitHelperDelegate {
@@ -119,6 +128,12 @@ class MultiplayerNetworking : GameKitHelperDelegate {
             //println("Error sending data:%@", error.localizedDescription)
             //[self matchEnded];
         }
+    }
+    func sendAddAbility(abilityName: String, destX:CGFloat, destY:CGFloat, duration: CGFloat) {
+        let message = Message(messageType: MessageType.kMessageTypeAddAbility)
+        var messageAdd = MessageAddAbility(message: message, name: abilityName, destinationX : destX, destinationY: destY, duration: duration)
+        var data = NSData(bytes: &messageAdd, length: sizeof(MessageAddAbility)) //[NSData dataWithBytes:&messageMove length:sizeof(MessageMove)];
+        sendData(data)
     }
     func sendSyncRemotePlayerPosition(posX:CGFloat, posY:CGFloat) {
         let message = Message(messageType: MessageType.KMessageTypeSyncRemotePlayerPosition)
@@ -335,6 +350,10 @@ class MultiplayerNetworking : GameKitHelperDelegate {
         } else if message.messageType == MessageType.KMessageTypeSyncRemotePlayerPosition {
             var messageSync = UnsafePointer<MessageSyncRemotePlayerPosition>(data.bytes).memory
             delegate!.syncRemotePlayerPosition(messageSync.positionX, posY: messageSync.positionY)
+        } else if message.messageType == MessageType.kMessageTypeAddAbility {
+            var messageAddAbility = UnsafePointer<MessageAddAbility>(data.bytes).memory
+            delegate!.shootProjectileInDirectionWithDuration(messageAddAbility.destinationX, destY: messageAddAbility.destinationY, duration: messageAddAbility.duration)
+            //delegate!.syncRemotePlayerPosition(messageSync.positionX, posY: messageSync.positionY)
         }
     }
 }

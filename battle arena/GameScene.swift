@@ -20,90 +20,72 @@ struct PhysicsCategory {
     static let Barrier      : UInt32 = 4
 }
 
-class GameScene: SKScene, SKPhysicsContactDelegate, MultiplayerNetworkingProtocol {
+class GameScene: SKScene, MultiplayerNetworkingProtocol {
     
     var gameWorld = GameWorld()
     var movementAnalog = MovementAnalog()
     var player1 = BaseCharacter()
     var player2 = BaseCharacter()
     var _currentPlayerIndex = 0
-    var _players = NSMutableArray()
     var networkingEngine = MultiplayerNetworking()
-    var frameNumber = 0
-    
-    var remotePlayerMoving = false
-    
-    var remotePlayerLastMove = CGPointMake(0, 0)
-    var remotePlayerReceivedMoveFrame = 0
-    var positionFrameNumber = 0
+    var localPlayerLastPositionSent = false
     
     override func didMoveToView(view: SKView) {
         self.anchorPoint = CGPointMake(0.5, 0.5)
+        givePlayersNames()
         gameWorld.addChild(player1)
-        gameWorld.player1 = self.player1
+        gameWorld.localPlayer = self.player1
         gameWorld.addChild(player2)
-        gameWorld.player2 = self.player2
+        gameWorld.remotePlayer = self.player2
         addChild(gameWorld)
         addChild(movementAnalog)
         updateBorderLayerPosition()
         self.physicsWorld.gravity = CGVectorMake(0, 0)
-        
+        physicsWorld.contactDelegate = gameWorld
+        runAction(SKAction.repeatActionForever(
+            SKAction.sequence([
+                SKAction.runBlock({self.sendLocalPlayerPosition(true); return ()}),
+                SKAction.waitForDuration(0.1)
+            ])
+        ))
     }
+    
     override func update(currentTime: CFTimeInterval) {
         gameWorld.update()
         moveLocalPlayer()
-        moveRemotePlayer()
-        sendSyncPositionData()
-        updateFrameNumber()
-        updatePositionFrameNumber()
-        
+    }
+    func setNetworkingEngine(engine: MultiplayerNetworking) {
+        self.networkingEngine = engine
+        gameWorld.networkingEngine = engine
+    }
+    func givePlayersNames() {
+        player1.name = "player1"
+        player2.name = "player2"
     }
     
     func moveLocalPlayer() {
         if movementAnalog.analogIsEngaged() {
+            localPlayerLastPositionSent = false
             var localPlayer = getLocalPlayer()
             var movementAmount = movementAnalog.getMovementAmount()
             localPlayer.movePosition(movementAmount)
-            if frameNumber == 0 {
-                networkingEngine.sendMove(movementAmount.x, posY: movementAmount.y)
-            }
         } else {
-            if frameNumber == 0 {
-                networkingEngine.sendMove(0, posY: 0)
+            if !localPlayerLastPositionSent {
+                sendLocalPlayerPosition(false)
+                localPlayerLastPositionSent = true
             }
         }
     }
-    func moveRemotePlayer() {
-        //if remotePlayerMoving {
-            //if frameNumber != 0 {
-                estimateRemotePlayerMovement()
-            //}
-        //}
-    }
-    func estimateRemotePlayerMovement() {
-        getRemotePlayer().movePosition(remotePlayerLastMove)
-    }
-    func sendSyncPositionData() {
-        if positionFrameNumber == 0 {
-            if remotePlayerLastMove.x != 0 && remotePlayerLastMove.y != 0 {
-                var localplayer = getLocalPlayer()
+    func sendLocalPlayerPosition(isAnalogDependant: Bool) {
+        var localplayer = getLocalPlayer()
+        if isAnalogDependant {
+            if movementAnalog.analogIsEngaged() {
                 networkingEngine.sendSyncRemotePlayerPosition(localplayer.position.x, posY: localplayer.position.y)
             }
+        } else {
+            networkingEngine.sendSyncRemotePlayerPosition(localplayer.position.x, posY: localplayer.position.y)
         }
     }
-    func updateFrameNumber() {
-        frameNumber++
-        if frameNumber == 4 {
-            frameNumber = 0
-        }
-    }
-    func updatePositionFrameNumber() {
-        positionFrameNumber++
-        if positionFrameNumber == 4 {
-            positionFrameNumber = 0
-        }
-    }
-    
     override func didFinishUpdate() {
         var localPlayer = getLocalPlayer()
         centerWorldOnMainChar(localPlayer)
@@ -133,49 +115,29 @@ class GameScene: SKScene, SKPhysicsContactDelegate, MultiplayerNetworkingProtoco
         self.childNodeWithName("borderLayer")?.position = gameWorld.position
     }
     
-    func didBeginContact(contact: SKPhysicsContact) {
-  
-        var firstBody: SKPhysicsBody?
-        var secondBody: SKPhysicsBody?
-        if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
-            firstBody = contact.bodyA
-            secondBody = contact.bodyB
-        } else {
-            firstBody = contact.bodyB
-            secondBody = contact.bodyA
-        }
-        
-        if (firstBody!.node != nil && secondBody!.node != nil) {
-            
-            if ((firstBody!.categoryBitMask == PhysicsCategory.Character) &&
-                (secondBody!.categoryBitMask == PhysicsCategory.Barrier)) {
-                    
-                    //projectileDidCollideWithMonster(secondBody!.node!, monster: firstBody!.node!)
-            }
-        }
-        
-    }
-    
     
     func matchEnded() {
     }
-    
+    func shootProjectileInDirectionWithDuration(destX:CGFloat, destY:CGFloat, duration: CGFloat) {
+        
+        gameWorld.shootProjectileInDirectionWithDuration(CGPointMake(destX, destY), duration: duration)
+    }
     func setCurrentPlayerIndex(index:Int) {
         _currentPlayerIndex = index
+        if _currentPlayerIndex == 0 {
+            gameWorld.localPlayer = player1
+            gameWorld.remotePlayer = player2
+        } else {
+            gameWorld.localPlayer = player2
+            gameWorld.remotePlayer = player1
+        }
     }
     
     func movePlayerAtIndex(/*index:Int*/posX:CGFloat, posY:CGFloat) {
-        //if posX != 0 && posY != 0 {
-            //remotePlayerMoving = true
-            remotePlayerLastMove = CGPointMake(posX, posY)
-            //getRemotePlayer().movePosition(remotePlayerLastMove)
-        //} else {
-        //    remotePlayerMoving = false
-        //    remotePlayerLastMove = CGPointMake(0, 0)
-        //}
+        
     }
     func syncRemotePlayerPosition(posX:CGFloat, posY:CGFloat) {
-        getRemotePlayer().updatePosition(CGPointMake(posX, posY))
+        getRemotePlayer().slideToPosition(CGPointMake(posX, posY))
     }
     func gameOver(player1Won:Bool) {
         
