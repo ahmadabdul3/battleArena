@@ -50,7 +50,7 @@ class MovementAnalog : SKNode {
         return CGPoint(x: xPos, y: yPos)
     }
     func normalizeMovementAmount() -> CGPoint {
-        return CGPoint(x: innerDot.position.x / 10, y: innerDot.position.y / 10)
+        return CGPoint(x: innerDot.position.x / 15, y: innerDot.position.y / 15)
     }
     func getMovementAmount() -> CGPoint {
         return normalizeMovementAmount()

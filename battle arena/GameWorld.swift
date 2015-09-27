@@ -17,6 +17,8 @@ class GameWorld: SKSpriteNode, SKPhysicsContactDelegate {
     var remotePlayer = BaseCharacter()
     let baseCharArray = NSMutableArray()
     var networkingEngine = MultiplayerNetworking()
+    var waitThreeSeconds = false
+    var threeSecondTimer = NSTimer()
     
     init() {
         super.init(texture: nil, color: nil, size: CGSize(width: 1000, height: 1000))
@@ -56,10 +58,21 @@ class GameWorld: SKSpriteNode, SKPhysicsContactDelegate {
     override func touchesEnded(touches: Set<NSObject>, withEvent event: UIEvent) {
         for touch in (touches as! Set<UITouch>) {
             let location = touch.locationInNode(self)
-            shootProjectileInDirection(location)
+            if !waitThreeSeconds {
+                shootProjectileInDirection(location)
+                waitThreeSecondsFunc()
+                waitThreeSeconds = true
+            }
         }
     }
-    
+    func waitThreeSecondsFunc() {
+        
+        threeSecondTimer = NSTimer.scheduledTimerWithTimeInterval(2, target: self, selector: Selector("setWaitThreeSecondsFalse"), userInfo: nil, repeats: false)
+    }
+    func setWaitThreeSecondsFalse() {
+        waitThreeSeconds = false
+        threeSecondTimer.invalidate()
+    }
     func shootProjectileInDirection(direction: CGPoint) {
         var projectile = getFrostBolt()
         projectile.position = localPlayer.position
@@ -69,15 +82,32 @@ class GameWorld: SKSpriteNode, SKPhysicsContactDelegate {
         var ypart = yminus * yminus
         var distance = sqrt(xpart + ypart)
         var duration = distance / 200
-        networkingEngine.sendAddAbility("frostBolt", destX: direction.x, destY: direction.y, duration: duration)
+        
+        var destination = maximizeProjectileDestination(localPlayer.position, projectileDestination: direction)
+        
+        var xpart2 = destination.x * destination.x
+        var ypart2 = destination.y * destination.y
+        var distance2 = sqrt(xpart2 + ypart2)
+        var realDuration:CGFloat = distance2 / 500
+        
+        
+        networkingEngine.sendAddAbility("frostBolt", destX: destination.x, destY: destination.y, duration: realDuration)
         addChild(projectile)
         projectile.runAction(
             SKAction.sequence([
-                SKAction.moveTo(direction, duration: NSTimeInterval(duration)),
+                SKAction.moveTo(destination, duration: NSTimeInterval(realDuration)),
                 SKAction.runBlock({self.removeNode(projectile); return ()})
                 ])
         )
         
+    }
+    func maximizeProjectileDestination(playerPosition:CGPoint, projectileDestination: CGPoint) -> CGPoint {
+        var xOffset = projectileDestination.x - playerPosition.x
+        var yOffset = projectileDestination.y - playerPosition.y
+        var xdest = xOffset * 1000
+        var ydest = yOffset * 1000
+        
+        return CGPointMake(xdest, ydest)
     }
     func getFrostBolt() -> FrostBolt {
         var bolt = FrostBolt()
@@ -103,6 +133,9 @@ class GameWorld: SKSpriteNode, SKPhysicsContactDelegate {
                 (secondBody!.categoryBitMask == PhysicsCategory.Projectile)) {
                     handleCollision(firstBody?.node! as! BaseCharacter, ability: secondBody?.node! as! BaseAbility)
                     //projectileDidCollideWithMonster(secondBody!.node!, monster: firstBody!.node!)
+            } else if ((firstBody!.categoryBitMask == PhysicsCategory.Projectile) &&
+                (secondBody!.categoryBitMask == PhysicsCategory.Barrier)) {
+                    firstBody?.node?.removeFromParent()
             }
         }
         
@@ -118,7 +151,7 @@ class GameWorld: SKSpriteNode, SKPhysicsContactDelegate {
         var projectile = getFrostBolt()
         projectile.casterName = remotePlayer.name!
         projectile.position = remotePlayer.position
-        addChild(projectilse)
+        addChild(projectile)
         projectile.runAction(
             SKAction.sequence([
                 SKAction.moveTo(direction, duration: NSTimeInterval(duration)),
